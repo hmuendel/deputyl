@@ -1,6 +1,7 @@
 package discovery
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -45,13 +46,13 @@ func NewerVersions(version string, upstreamVersions []string) (patch, minor, maj
 	for _, upstreamVersion := range upstreamVersions {
 		upstreamVersion = strings.TrimPrefix(upstreamVersion, "v")
 		uv, err := semver.Make(upstreamVersion)
-		if uv.LTE(v) {
-			continue
-		}
 		if err != nil {
 			continue
 		} else {
 			hasSemvers = true
+		}
+		if uv.LTE(v) {
+			continue
 		}
 		if uv.Major > v.Major {
 			major += 1
@@ -68,10 +69,7 @@ func NewerVersions(version string, upstreamVersions []string) (patch, minor, maj
 
 	}
 	if !hasSemvers {
-		if glog.V(3) {
-			glog.Infof("none of the upsteam versions seems to be a newer semver")
-		}
-		return 0, 0, 0, nil
+		return 0, 0, 0, errors.New("none of the upsteam versions seems to be a semver")
 	}
 	return
 }
