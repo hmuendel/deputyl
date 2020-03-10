@@ -1,7 +1,6 @@
 package metrics
 
 import (
-	"github.com/hmuendel/glog"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
