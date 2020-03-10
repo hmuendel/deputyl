@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "deputyl.fullname" . }}-config
+  labels:
+{{ include "deputyl.labels" . | indent 4 }}
+data:
+  config.yaml: |
+    server:
+      address: 0.0.0.0
+      port: {{ .Values.pod.port }}
+{{ .Values.config | toYaml | indent 4 }}

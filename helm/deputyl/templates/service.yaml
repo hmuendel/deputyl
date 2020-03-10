@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "deputyl.fullname" . }}
+  labels:
+    {{- include "deputyl.labels" . | nindent 4 }}
+  annotations:
+    {{- range $key, $value := .Values.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+      prometheus.io/scrape: {{ .Values.metrics.prometheus.enabled | quote }}
+      prometheus.io/port: {{ .Values.pod.port | quote }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "deputyl.selectorLabels" . | nindent 4 }}
