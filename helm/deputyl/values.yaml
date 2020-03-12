@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: hmuendel/deputyl
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
@@ -65,6 +65,27 @@ tolerations: []
 affinity: {}
 
 config:
+  server:
+    # ip address to listen on 
+    address: 0.0.0.0 
+    # tcp port to listen on
+    port: 8080
+  discovery:
+    # interval for discover and check new versions, defaults to 30m
+    interval: 1800000000000
+    # skip upstream pre release versions, defaults to false
+    skip-pre: false
+    # skip upstream build versions, defaults to false
+    skip-build: false
+  depcheck:
+    # the default registry url used for images like concourse/concourse
+    hub-url: registry.hub.docker.com
+    # prefix of library images like e.g. just nginx
+    library: library
+    # the docker tag used if no tag is provided
+    tag: latest
+    # list of registries, to be replaced with default docker url
+    urls: ["docker.io"]
   log:
     # log to standard error instead of file
     logtostderr: true

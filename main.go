@@ -74,6 +74,9 @@ func main() {
 	if glog.V(8) {
 		glog.Infof("config: %#v \n", config)
 		glog.Infof("log config: %#v \n", config.Log)
+		glog.Infof("server config: %#v \n", config.Server)
+		glog.Infof("discovery config: %#v \n", config.Discovery)
+		glog.Infof("depcheck config: %#v \n", config.Depckeck)
 	}
 	if err != nil {
 		fmt.Printf("error getting proc: %s", err)

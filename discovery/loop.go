@@ -29,13 +29,13 @@ type Discoverer interface {
 }
 
 type Config struct {
-	Interval  time.Duration `desc:"interval for discover and check new versions, defaults to 10s"`
-	SkipPre   bool          `desc:"skip upstream pre release versions, defaults to false"`
-	SkipBuild bool          `desc:"skip upstream build versions, defaults to false"`
+	Interval  time.Duration `desc:"interval for discover and check new versions, defaults to 30m"`
+	SkipPre   bool          `id:"skip-pre" desc:"skip upstream pre release versions, defaults to false"`
+	SkipBuild bool          `id:"skip-build" desc:"skip upstream build versions, defaults to false"`
 }
 
 var DefaultConfig = Config{
-	Interval:  120 * time.Second,
+	Interval:  30 * time.Minute,
 	SkipPre:   false,
 	SkipBuild: false,
 }

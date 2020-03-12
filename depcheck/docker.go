@@ -26,10 +26,10 @@ type HubClient interface {
 }
 
 type Config struct {
-	DefaultDockerUrl     string   `desc:"the default registry url used for images like concourse/concourse"`
-	DefaultLibraryPrefix string   `desc:"prefix of library images like e.g. just nginx"`
-	DefaultTag           string   `desc:"the docker tag used if no tag is provided"`
-	DefaultHubUrls       []string `desc:"list of registries, to be replaced with default docker url"`
+	DefaultDockerUrl     string   `id:"hub-url" desc:"the default registry url used for images like concourse/concourse"`
+	DefaultLibraryPrefix string   `id:"library" desc:"prefix of library images like e.g. just nginx"`
+	DefaultTag           string   `id:"tag" desc:"the docker tag used if no tag is provided"`
+	DefaultHubUrls       []string `id:"urls" desc:"list of registries, to be replaced with default docker url"`
 }
 
 var DefaultConfig = Config{
