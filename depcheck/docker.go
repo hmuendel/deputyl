@@ -85,6 +85,7 @@ func (hc *HerokuClient) Tags(image, url, username, password string) ([]string, e
 	if err != nil {
 		return nil, err
 	}
+	hub.Logf = glog.V(5).Infof
 	tags, err := hub.Tags(image)
 	if err != nil {
 		return nil, err

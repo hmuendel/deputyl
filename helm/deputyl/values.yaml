@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: hmuendel/deputyl
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
