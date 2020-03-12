@@ -5,12 +5,25 @@ import (
 	"testing"
 )
 
+// gcr.io/heptio-images/eventrouter:v0.2
 func TestNewVersions(t *testing.T) {
 	plainUpsteamVersions := []string{
 		"0.1.0", "0.1.1", "0.2.0", "0.2.1", "1.0.0", "1.0.1", "1.1.0", "1.1.1",
 	}
 	prefixedUpstreamVersions := []string{
 		"v0.1.0", "v0.1.1", "v0.2.0", "v0.2.1", "v1.0.0", "v1.0.1", "v1.1.0", "v1.1.1",
+	}
+	onlyMinorVersions := []string{
+		"0.1", "0.2", "1.0", "1.1",
+	}
+	onlyMajorVersions := []string{
+		"0", "1", "2",
+	}
+	mixedVersions := []string{
+		"0.1.0", "0.1.1", "0.2.0", "0.2.1", "1.0.0", "1.0.1", "1.1.0", "1.1.1",
+		"v0.1.0", "v0.1.1", "v0.2.0", "v0.2.1", "v1.0.0", "v1.0.1", "v1.1.0", "v1.1.1",
+		"0.1", "0.2", "1.0", "1.1",
+		"0", "1", "2",
 	}
 	testCases := [...]struct {
 		name            string
@@ -33,6 +46,13 @@ func TestNewVersions(t *testing.T) {
 		{"prefixed-semvers-all-newer-v", "v0.1.0", false, prefixedUpstreamVersions, 1, 2, 4},
 		{"prefixed-semvers-some-newer-v", "v0.3.1", false, prefixedUpstreamVersions, 0, 0, 4},
 		{"prefixed-semvers-one-newer-v", "v1.1.0", false, prefixedUpstreamVersions, 1, 0, 0},
+		{"non-semver-upstreams-minor-complete", "0.1.0", false, onlyMinorVersions, 0, 1, 2},
+		{"non-semver-upstreams-minor", "0.1", false, onlyMinorVersions, 0, 1, 2},
+		{"non-semver-upstreams-minor-major", "1", false, onlyMinorVersions, 0, 1, 0},
+		{"non-semver-upstreams-major-complete", "0.1.0", false, onlyMajorVersions, 0, 0, 2},
+		{"non-semver-upstreams-major", "0.1", false, onlyMajorVersions, 0, 0, 2},
+		{"non-semver-upstreams-major-major", "1", false, onlyMajorVersions, 0, 0, 1},
+		{"mixed-upstreams-complete", "0.1.0", false, mixedVersions, 2, 5, 12},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

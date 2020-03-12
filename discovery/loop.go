@@ -29,11 +29,32 @@ type Discoverer interface {
 }
 
 type Config struct {
-	Interval time.Duration `desc:"interval for discover and check new versions, defaults to 10s"`
+	Interval  time.Duration `desc:"interval for discover and check new versions, defaults to 10s"`
+	SkipPre   bool          `desc:"skip upstream pre release versions, defaults to false"`
+	SkipBuild bool          `desc:"skip upstream build versions, defaults to false"`
 }
 
 var DefaultConfig = Config{
-	Interval: 120 * time.Second,
+	Interval:  120 * time.Second,
+	SkipPre:   false,
+	SkipBuild: false,
+}
+
+func parseNonSemver(version string) (semver.Version, error) {
+	preReleaseSplit := strings.Split(version, "-")
+	buildSplit := strings.Split(preReleaseSplit[0], "+")
+	versionSplit := strings.Split(buildSplit[0], ".")
+	if len(versionSplit) == 2 {
+		version = version + ".0"
+	}
+	if len(version) == 1 {
+		version = version + ".0.0"
+	}
+	buildSplit[0] = version
+	version = strings.Join(buildSplit, "+")
+	preReleaseSplit[0] = version
+	version = strings.Join(preReleaseSplit, "-")
+	return semver.Make(version)
 }
 
 func NewerVersions(version string, upstreamVersions []string) (patch, minor, major uint64, err error) {
@@ -41,16 +62,30 @@ func NewerVersions(version string, upstreamVersions []string) (patch, minor, maj
 	version = strings.TrimPrefix(version, "v")
 	v, err := semver.Make(version)
 	if err != nil {
-		return 0, 0, 0, err
+		if glog.V(3) {
+			glog.Errorf("could not parse %v into semver: %v", version, err)
+		}
+		v, err = parseNonSemver(version)
+		if err != nil {
+			return 0, 0, 0, err
+		}
 	}
 	for _, upstreamVersion := range upstreamVersions {
 		upstreamVersion = strings.TrimPrefix(upstreamVersion, "v")
 		uv, err := semver.Make(upstreamVersion)
 		if err != nil {
-			continue
-		} else {
-			hasSemvers = true
+			if glog.V(3) {
+				glog.Errorf("could not parse upstream %v into semver: %v", version, err)
+			}
+			uv, err = parseNonSemver(upstreamVersion)
+			if err != nil {
+				if glog.V(3) {
+					glog.Errorf("could not parse upstream %s, skipping", upstreamVersion)
+				}
+				continue
+			}
 		}
+		hasSemvers = true
 		if uv.LTE(v) {
 			continue
 		}
