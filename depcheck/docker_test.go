@@ -52,6 +52,8 @@ func TestImageStingHandling(t *testing.T) {
 			shResult{false, "https://gcr.io", "tag", "kubernetes-helm/tiller"}},
 		{"gcr-2tags", "gcr.io/kubernetes-helm/tiller:tag:2",
 			shResult{true, "", "", ""}},
+		{"docker.io", "docker.io/kubernetes-helm/tiller:tag",
+			shResult{false, "https://" + dc.DefaultConfig.DefaultDockerUrl, "tag", "kubernetes-helm/tiller"}},
 	}
 
 	for _, tc := range testsCases {

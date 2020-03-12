@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"encoding/json"
+
 	"github.com/hmuendel/docker-registry-client/registry"
 	"github.com/hmuendel/glog"
 )
@@ -77,7 +78,7 @@ func splitDockerString(image string) (hubUrl, name, tag string, err error) {
 	hubUrl = imgSplit[0]
 	for _, urlCandidate := range DefaultConfig.DefaultHubUrls {
 		if urlCandidate == hubUrl {
-			hubUrl = urlCandidate
+			hubUrl = DefaultConfig.DefaultDockerUrl
 			break
 		}
 	}
