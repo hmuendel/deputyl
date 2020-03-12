@@ -86,6 +86,18 @@ func NewerVersions(version string, upstreamVersions []string) (patch, minor, maj
 			}
 		}
 		hasSemvers = true
+		if DefaultConfig.SkipPre && len(uv.Pre) > 0 {
+			if glog.V(5) {
+				glog.Infof("skipping pre release version %s", upstreamVersion)
+			}
+			continue
+		}
+		if DefaultConfig.SkipBuild && len(uv.Build) > 0 {
+			if glog.V(5) {
+				glog.Infof("skipping build version %s", upstreamVersion)
+			}
+			continue
+		}
 		if uv.LTE(v) {
 			continue
 		}

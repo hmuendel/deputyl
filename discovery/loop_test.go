@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-// gcr.io/heptio-images/eventrouter:v0.2
 func TestNewVersions(t *testing.T) {
 	plainUpsteamVersions := []string{
 		"0.1.0", "0.1.1", "0.2.0", "0.2.1", "1.0.0", "1.0.1", "1.1.0", "1.1.1",
