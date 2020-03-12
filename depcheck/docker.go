@@ -25,15 +25,17 @@ type HubClient interface {
 }
 
 type Config struct {
-	DefaultDockerUrl     string `desc:"the default registry url used for images like concourse/concourse"`
-	DefaultLibraryPrefix string `desc:"prefix of library images like e.g. just nginx"`
-	DefaultTag           string `desc:"the docker tag used if no tag is provided"`
+	DefaultDockerUrl     string   `desc:"the default registry url used for images like concourse/concourse"`
+	DefaultLibraryPrefix string   `desc:"prefix of library images like e.g. just nginx"`
+	DefaultTag           string   `desc:"the docker tag used if no tag is provided"`
+	DefaultHubUrls       []string `desc:"list of registries, to be replaced with default docker url"`
 }
 
 var DefaultConfig = Config{
 	DefaultDockerUrl:     DEFAULT_DOCKER_URL,
 	DefaultLibraryPrefix: DEFAULT_LIBRARY_PREFIX,
 	DefaultTag:           DEFAULT_TAG,
+	DefaultHubUrls:       []string{"docker.io"},
 }
 
 // Holding usrname and password for docker registries
@@ -73,6 +75,12 @@ func splitDockerString(image string) (hubUrl, name, tag string, err error) {
 		return "", "", "", errors.New("invalid docker image")
 	}
 	hubUrl = imgSplit[0]
+	for _, urlCandidate := range DefaultConfig.DefaultHubUrls {
+		if urlCandidate == hubUrl {
+			hubUrl = urlCandidate
+			break
+		}
+	}
 	name = strings.Join(imgSplit[1:], "/")
 	return
 }
